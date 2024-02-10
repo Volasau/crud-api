@@ -2,9 +2,9 @@
   "name": "crud-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "start:dev": "nodemon",
+    "start:dev": "nodemon --exec ts-node-dev --respawn --transpile-only ./src/index.ts",
     "start:prod": "tsc && node ./dist/index.js",
     "test": "jest"
   },
