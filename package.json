@@ -1,0 +1,28 @@
+{
+  "name": "crud-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "nodemon",
+    "start:prod": "tsc && node ./dist/index.js",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "Ryhor Volasau",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.17",
+    "@types/uuid": "^9.0.8",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.2",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.3",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3",
+    "uuid": "^9.0.1"
+  }
+}
