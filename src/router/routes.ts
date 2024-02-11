@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { addUser, getAllUsers, getUser } from './functions';
+import { addUser, getAllUsers, getUser, updateUser } from './functions';
 
 export function handleRequest(req: IncomingMessage, res: ServerResponse) {
   if (
@@ -11,6 +11,8 @@ export function handleRequest(req: IncomingMessage, res: ServerResponse) {
     addUser(req, res);
   } else if (req.method === 'GET' && req.url.startsWith('/api/users/')) {
     getUser(req, res);
+  } else if (req.method === 'PUT' && req.url.startsWith('/api/users/')) {
+    updateUser(req, res);
   } else {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('404 Not Found');
