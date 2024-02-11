@@ -1,12 +1,10 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import {
-  addUser,
-  deleteUser,
-  getAllUsers,
-  getUser,
-  updateUser,
-} from './functions';
 import { ICodes } from '../interface/Codes';
+import { getAllUsers } from '../app/getAllUsers';
+import { addUser } from '../app/addUser';
+import { getUser } from '../app/getUser';
+import { updateUser } from '../app/updateUser';
+import { deleteUser } from '../app/deleteUser';
 
 export function handleRequest(req: IncomingMessage, res: ServerResponse) {
   try {
