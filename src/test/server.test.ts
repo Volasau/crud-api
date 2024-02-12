@@ -78,4 +78,37 @@ describe('Different methods', () => {
     expect(responseGetUser.body.age).toEqual(newUser.age);
     expect(responseGetUser.body.hobbies).toEqual(newUser.hobbies);
   });
+
+  test('should update user by userId', async () => {
+    const newUser = {
+      username: 'Ryhor',
+      age: 40,
+      hobbies: ['bla bla', 'tuk tuk'],
+    };
+
+    const response = await request(server)
+      .post('/api/users')
+      .send(newUser)
+      .set('Accept', 'application/json');
+
+    const userId = response.body.id;
+
+    const updatedUserData = {
+      username: 'Vasy',
+      age: 50,
+      hobbies: ['ly ly', 'topaly'],
+    };
+
+    const updateResponse = await request(server)
+      .put(`/api/users/${userId}`)
+      .send(updatedUserData)
+      .set('Accept', 'application/json');
+
+    expect(updateResponse.statusCode).toEqual(ICodes.OK);
+    expect(updateResponse.body).toBeDefined();
+    expect(updateResponse.body.id).toEqual(userId);
+    expect(updateResponse.body.username).toEqual(updatedUserData.username);
+    expect(updateResponse.body.age).toEqual(updatedUserData.age);
+    expect(updateResponse.body.hobbies).toEqual(updatedUserData.hobbies);
+  });
 });
