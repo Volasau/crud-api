@@ -111,4 +111,25 @@ describe('Different methods', () => {
     expect(updateResponse.body.age).toEqual(updatedUserData.age);
     expect(updateResponse.body.hobbies).toEqual(updatedUserData.hobbies);
   });
+
+  test('should delete user by userId', async () => {
+    const newUser = {
+      username: 'Ryhor',
+      age: 40,
+      hobbies: ['bla bla', 'tuk tuk'],
+    };
+
+    const response = await request(server)
+      .post('/api/users')
+      .send(newUser)
+      .set('Accept', 'application/json');
+
+    const userId = response.body.id;
+
+    const deleteResponse = await request(server)
+      .delete(`/api/users/${userId}`)
+      .set('Accept', 'application/json');
+
+    expect(deleteResponse.statusCode).toEqual(ICodes.FOUND_DELETED);
+  });
 });
