@@ -11,7 +11,7 @@ const users: IUser[] = [];
 
 const cpus = os.cpus().length;
 
-const port = Number(process.env.PORT) || 7;
+const port = Number(process.env.PORT) || 7000;
 
 if (cluster.isPrimary) {
   for (let i = 0; i < cpus - 1; i++) {
