@@ -39,17 +39,43 @@ describe('Different methods', () => {
       hobbies: ['bla bla', 'tuk tuk'],
     };
 
-    const res = await request(server)
+    const response = await request(server)
       .post('/api/users')
       .send(newUser)
       .set('Accept', 'application/json');
 
-    expect(res.statusCode).toEqual(ICodes.CREATED);
-    expect(res.headers['content-type']).toEqual('application/json');
-    expect(res.body).toBeDefined();
-    expect(res.body.id).toBeDefined();
-    expect(res.body.username).toEqual(newUser.username);
-    expect(res.body.age).toEqual(newUser.age);
-    expect(res.body.hobbies).toEqual(newUser.hobbies);
+    expect(response.statusCode).toEqual(ICodes.CREATED);
+    expect(response.headers['content-type']).toEqual('application/json');
+    expect(response.body).toBeDefined();
+    expect(response.body.id).toBeDefined();
+    expect(response.body.username).toEqual(newUser.username);
+    expect(response.body.age).toEqual(newUser.age);
+    expect(response.body.hobbies).toEqual(newUser.hobbies);
+  });
+
+  test('should get user by userId', async () => {
+    const newUser = {
+      username: 'Ryhor',
+      age: 40,
+      hobbies: ['bla bla', 'tuk tuk'],
+    };
+
+    const response = await request(server)
+      .post('/api/users')
+      .send(newUser)
+      .set('Accept', 'application/json');
+
+    const userId = response.body.id;
+
+    const responseGetUser = await request(server)
+      .get(`/api/users/${userId}`)
+      .set('Accept', 'application/json');
+
+    expect(responseGetUser.statusCode).toEqual(ICodes.OK);
+    expect(responseGetUser.body).toBeDefined();
+    expect(responseGetUser.body.id).toEqual(userId);
+    expect(responseGetUser.body.username).toEqual(newUser.username);
+    expect(responseGetUser.body.age).toEqual(newUser.age);
+    expect(responseGetUser.body.hobbies).toEqual(newUser.hobbies);
   });
 });
