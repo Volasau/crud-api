@@ -3,6 +3,8 @@ import { server } from '../index';
 import { IUser } from '../interface/User';
 import { ICodes } from '../interface/Codes';
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
+import { IncomingMessage, ServerResponse } from 'http';
+import { handleRequest } from '../router/routes';
 
 describe('Server', () => {
   test('should respond with status code 200', async () => {
@@ -197,5 +199,96 @@ describe('invalid values', () => {
       .set('Accept', 'application/json');
 
     expect(response.statusCode).toEqual(ICodes.NOT_FOUND);
+  });
+});
+
+describe('new invalid values', () => {
+  test('should create new user with no age', async () => {
+    const newUser = {
+      username: 'Ryhor',
+      hobbies: ['bla bla'],
+    };
+
+    const response = await request(server)
+      .post('/api/users')
+      .send(newUser)
+      .set('Accept', 'application/json');
+
+    expect(response.statusCode).toEqual(ICodes.BAD_REQUEST);
+    expect(response.text).toEqual('Missing fields: age');
+  });
+
+  test('should create new user with no name', async () => {
+    const newUser = {
+      age: 40,
+      hobbies: ['bla bla'],
+    };
+
+    const response = await request(server)
+      .post('/api/users')
+      .send(newUser)
+      .set('Accept', 'application/json');
+
+    expect(response.statusCode).toEqual(ICodes.BAD_REQUEST);
+    expect(response.text).toEqual('Missing fields: username');
+  });
+
+  test('should create new user with no name', async () => {
+    const newUser = {
+      username: 'Ryhor',
+      age: 40,
+    };
+
+    const response = await request(server)
+      .post('/api/users')
+      .send(newUser)
+      .set('Accept', 'application/json');
+
+    expect(response.statusCode).toEqual(ICodes.BAD_REQUEST);
+    expect(response.text).toEqual('Missing fields: hobbies');
+  });
+
+  test('should create a new user with extra fields', async () => {
+    const newUser = {
+      username: 'Ryhor',
+      age: 40,
+      hobbies: ['bla bla'],
+      www: 'ops',
+    };
+
+    const response = await request(server)
+      .post('/api/users')
+      .send(newUser)
+      .set('Accept', 'application/json');
+
+    expect(response.statusCode).toEqual(ICodes.BAD_REQUEST);
+    expect(response.text).toEqual('Extra fields are present');
+  });
+
+  test('should update user with invalid hobbies', async () => {
+    const newUser = {
+      username: 'Ryhor',
+      age: 40,
+      hobbies: ['bla bla', 'tuk tuk'],
+    };
+
+    const response = await request(server)
+      .post('/api/users')
+      .send(newUser)
+      .set('Accept', 'application/json');
+
+    const userId = response.body.id;
+    const updatedUserData = {
+      username: 'Vasy',
+      age: 50,
+      hobbies: 22,
+    };
+
+    const updateResponse = await request(server)
+      .put(`/api/users/${userId}`)
+      .send(updatedUserData)
+      .set('Accept', 'application/json');
+
+    expect(updateResponse.statusCode).toEqual(ICodes.BAD_REQUEST);
   });
 });
