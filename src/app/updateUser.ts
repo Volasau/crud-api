@@ -31,13 +31,18 @@ export function updateUser(req: IncomingMessage, res: ServerResponse) {
       try {
         const userData: Partial<IUser> = JSON.parse(body);
         if (
-          !userData.username ||
-          !userData.age ||
+          !(typeof userData.username === 'string') ||
+          !userData.username.trim() ||
+          !(typeof userData.age === 'number') ||
           !userData.hobbies ||
-          !Array.isArray(userData.hobbies)
+          !Array.isArray(userData.hobbies) ||
+          userData.hobbies.some(
+            (hobby: string) =>
+              typeof hobby !== 'string' || hobby.trim().length === 0
+          )
         ) {
           res.writeHead(ICodes.BAD_REQUEST, { 'Content-Type': 'text/plain' });
-          res.end('Missing required fields');
+          res.end('Fields are filled in incorrectly');
           return;
         }
 
