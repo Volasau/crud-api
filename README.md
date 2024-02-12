@@ -30,6 +30,18 @@ npm run start:multi
 
 ### Run test
 
+## start the server before the tests
+
+```
+npm run start:dev
+```
+
+```
+npm run start:prod
+```
+
+## Run the tests
+
 ```
 npm run test
 ```
