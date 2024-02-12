@@ -3,8 +3,6 @@ import { server } from '../index';
 import { IUser } from '../interface/User';
 import { ICodes } from '../interface/Codes';
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
-import { IncomingMessage, ServerResponse } from 'http';
-import { handleRequest } from '../router/routes';
 
 describe('Server', () => {
   test('should respond with status code 200', async () => {
