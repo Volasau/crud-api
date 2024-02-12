@@ -2,6 +2,7 @@ import request from 'supertest';
 import { server } from '../index';
 import { IUser } from '../interface/User';
 import { ICodes } from '../interface/Codes';
+import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
 
 describe('Server', () => {
   test('should respond with status code 200', async () => {
@@ -131,5 +132,70 @@ describe('Different methods', () => {
       .set('Accept', 'application/json');
 
     expect(deleteResponse.statusCode).toEqual(ICodes.FOUND_DELETED);
+  });
+});
+
+describe('invalid values', () => {
+  const users: IUser[] = [];
+
+  test('should return error where invalid address', async () => {
+    const response = await request(server)
+      .get('/api/userswww')
+      .set('Accept', 'application/json');
+
+    expect(response.statusCode).toEqual(ICodes.NOT_FOUND);
+    expect(response.text).toEqual('404 Not Found');
+  });
+
+  test('should create new user with invalid data', async () => {
+    const newUser = {
+      username: '',
+      age: -10,
+      hobbies: ['bla bla', 123],
+    };
+
+    const response = await request(server)
+      .post('/api/users')
+      .send(newUser)
+      .set('Accept', 'application/json');
+
+    expect(response.statusCode).toEqual(ICodes.BAD_REQUEST);
+  });
+
+  test('should get user by invalid userId', async () => {
+    const invalidUserId = '12345';
+
+    const response = await request(server)
+      .get(`/api/users/${invalidUserId}`)
+      .set('Accept', 'application/json');
+
+    expect(response.statusCode).toEqual(ICodes.BAD_REQUEST);
+  });
+
+  test('should update user with invalid userId', async () => {
+    const invalidUserId = uuidv4();
+
+    const updatedUserData = {
+      username: 'Vasy',
+      age: 50,
+      hobbies: ['ly ly', 'topaly'],
+    };
+
+    const response = await request(server)
+      .put(`/api/users/${invalidUserId}`)
+      .send(updatedUserData)
+      .set('Accept', 'application/json');
+
+    expect(response.statusCode).toEqual(ICodes.NOT_FOUND);
+  });
+
+  test('should delete user with invalid userId', async () => {
+    const invalidUserId = uuidv4();
+
+    const response = await request(server)
+      .delete(`/api/users/${invalidUserId}`)
+      .set('Accept', 'application/json');
+
+    expect(response.statusCode).toEqual(ICodes.NOT_FOUND);
   });
 });
