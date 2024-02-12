@@ -15,16 +15,39 @@ export function addUser(req: IncomingMessage, res: ServerResponse) {
     req.on('end', () => {
       try {
         const userData = JSON.parse(body);
+
+        const requiredKeys = ['username', 'age', 'hobbies'];
+
+        const missingKeys = requiredKeys.filter((key) => !(key in userData));
+        const extraKeys = Object.keys(userData).filter(
+          (key) => !requiredKeys.includes(key)
+        );
+
+        if (missingKeys.length > 0) {
+          res.writeHead(ICodes.BAD_REQUEST, { 'Content-Type': 'text/plain' });
+          res.end(`Missing fields: ${missingKeys.join(', ')}`);
+          return;
+        }
+
+        if (extraKeys.length > 0) {
+          res.writeHead(ICodes.BAD_REQUEST, { 'Content-Type': 'text/plain' });
+          res.end('Extra fields are present');
+          return;
+        }
+
+        const checkHobbis =
+          userData.hobbies instanceof Array &&
+          (userData.hobbies.length === 0 ||
+            userData.hobbies.every(
+              (hobby: string) => typeof hobby === 'string'
+            ));
+
         if (
           !(typeof userData.username === 'string') ||
           !userData.username.trim() ||
           !(typeof userData.age === 'number') ||
           !userData.hobbies ||
-          !Array.isArray(userData.hobbies) ||
-          userData.hobbies.some(
-            (hobby: string) =>
-              typeof hobby !== 'string' || hobby.trim().length === 0
-          )
+          !checkHobbis
         ) {
           res.writeHead(ICodes.BAD_REQUEST, { 'Content-Type': 'text/plain' });
           res.end('Fields are filled in incorrectly');
